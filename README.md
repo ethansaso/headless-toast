@@ -4,7 +4,7 @@ A tiny, headless toast state manager built on Zustand.
 
 ## Install
 
-npm i headless-toast zustand
+npm i https://github.com/ethansaso/headless-toast
 
 ## Usage
 
