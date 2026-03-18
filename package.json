@@ -1,6 +1,6 @@
 {
   "name": "headless-toast",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A tiny, headless toast state manager built on Zustand",
   "type": "module",
   "main": "./dist/index.js",
@@ -22,7 +22,8 @@
     "typescript": "^5.9.3"
   },
   "peerDependencies": {
-    "zustand": "^4 || ^5"
+    "zustand": "^4 || ^5",
+    "react": "^18 || ^19"
   },
   "keywords": [
     "toast",
