@@ -68,11 +68,11 @@ export function createToastSystem<const TVariant extends string>(
   type Input = ToastInput<Variant>;
   type State = ToastStoreState<Variant>;
 
+  const activeTimers = new Map<string, ReturnType<typeof setTimeout>>();
+
   function resolveDefaults(input: Input): Omit<Item, "id"> {
     const variant = input.variant ?? config.variants[0];
-
-    const title =
-      input.title ?? config.getDefaultTitle?.(variant) ?? "Notification";
+    const title = input.title ?? config.getDefaultTitle?.(variant) ?? "Notification";
 
     return {
       title,
@@ -82,22 +82,44 @@ export function createToastSystem<const TVariant extends string>(
     };
   }
 
-  const useToastStore: ToastStore<Variant> = create<State>((set) => ({
+  const useToastStore: ToastStore<Variant> = create<State>((set, get) => ({
     toasts: [],
 
     add: (input) => {
       const id = crypto.randomUUID();
-      const item: Item = { id, ...resolveDefaults(input) };
+      const resolved = resolveDefaults(input);
+      const item: Item = { id, ...resolved };
+
       set((s) => ({ toasts: [...s.toasts, item] }));
+
+      if (resolved.duration > 0 && resolved.duration !== Infinity) {
+        const timer = setTimeout(() => {
+          get().remove(id);
+        }, resolved.duration);
+        
+        activeTimers.set(id, timer);
+      }
+
       return id;
     },
 
-    remove: (id) =>
+    remove: (id) => {
+      const timer = activeTimers.get(id);
+      if (timer) {
+        clearTimeout(timer);
+        activeTimers.delete(id);
+      }
+
       set((s) => ({
         toasts: s.toasts.filter((t) => t.id !== id),
-      })),
+      }));
+    },
 
-    clear: () => set({ toasts: [] }),
+    clear: () => {
+      activeTimers.forEach((timer) => clearTimeout(timer));
+      activeTimers.clear();
+      set({ toasts: [] });
+    },
   }));
 
   /** Adds a toast notification. */
