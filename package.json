@@ -1,0 +1,34 @@
+{
+  "name": "headless-toast",
+  "version": "0.1.0",
+  "description": "A tiny, headless toast state manager built on Zustand",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "zustand": "^4 || ^5"
+  },
+  "keywords": [
+    "toast",
+    "zustand",
+    "react",
+    "headless"
+  ],
+  "license": "MIT"
+}
